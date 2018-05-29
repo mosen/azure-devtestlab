@@ -1,0 +1,26 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
+    "title": "Apache Tomcat",
+    "description": "An open source implementation of the Java Servlet, JavaServer Pages, Java Expression Language and Java WebSocket technologies.",
+    "iconUri": "https://tomcat.apache.org/res/images/tomcat.png",
+    "targetOsType": "Linux",
+    "parameters": {
+        "group": {
+            "type": "string",
+            "displayName": "Tomcat group",
+            "description": "The group that the tomcat user will be a member of",
+            "allowEmpty": false,
+            "defaultValue": "tomcat"
+        },
+        "user": {
+            "type": "string",
+            "displayName": "Tomcat user",
+            "description": "The user that tomcat will run as",
+            "allowEmpty": false,
+            "defaultValue": "tomcat"
+        }
+    },
+    "runCommand": {
+        "commandToExecute": "[concat('sh linux_install_tomcat.sh ', parameters('user'), parameters('group')]"
+    }
+}

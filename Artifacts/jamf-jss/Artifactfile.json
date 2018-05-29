@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
+    "title": "JAMF Pro JSS",
+    "description": "JAMF Pro from Azure Storage Account",
+    "iconUri": "https://resources.jamf.com/images/logos/jamf-pro-color-100px.svg",
+    "targetOsType": "Linux",
+    "parameters": {
+
+    },
+    "runCommand": {
+        "commandToExecute": "['sh linux_install_jss.sh']"
+    }
+}

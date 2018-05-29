@@ -21,6 +21,6 @@
         }
     },
     "runCommand": {
-        "commandToExecute": "[concat('sh linux_install_tomcat.sh ', parameters('user'), parameters('group'))]"
+        "commandToExecute": "[concat('sh linux_install_tomcat.sh ', parameters('user'), ' ', parameters('group'))]"
     }
 }

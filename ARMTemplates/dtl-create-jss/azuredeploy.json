@@ -1,0 +1,111 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newVMName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the new vm to be created."
+      }
+    },
+    "existingLabName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of an existing lab where the new vm will be created."
+      }
+    },
+    "offer": {
+      "type": "string",
+      "metadata": {
+        "description": "Offer of the gallery image"
+      }
+    },
+    "publisher": {
+      "type": "string",
+      "metadata": {
+        "description": "Publisher of the gallery image"
+      }
+    },
+    "sku": {
+      "type": "string",
+      "metadata": {
+        "description": "Sku of the gallery image"
+      }
+    },
+    "osType": {
+      "type": "string",
+      "metadata": {
+        "description": "OsType of the gallery image"
+      }
+    },
+    "version": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Version of the gallery image"
+      }
+    },
+    "newVMSize": {
+      "type": "string",
+      "metadata": {
+        "description": "The size of the new vm to be created."
+      }
+    },
+    "userName": {
+      "type": "string",
+      "metadata": {
+        "description": "The username for the local account that will be created on the new vm."
+      }
+    },
+    "sshKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The SSH key for the local account that will be created on the new vm."
+      }
+    },
+    "expirationDate": {
+      "type": "string",
+      "defaultValue": "2018-05-29T14:00:00.000Z",
+      "metadata": {
+        "description": "The date and time on which the VM will expire"
+      }
+    }
+  },
+  "variables": {
+    "labSubnetName": "[concat(variables('labVirtualNetworkName'), 'Subnet')]",
+    "labVirtualNetworkId": "[resourceId('Microsoft.DevTestLab/labs/virtualnetworks', parameters('existingLabName'), variables('labVirtualNetworkName'))]",
+    "labVirtualNetworkName": "[concat('Dtl', parameters('existingLabName'))]",
+    "vmId": "[resourceId ('Microsoft.DevTestLab/labs/virtualmachines', parameters('existingLabName'), parameters('newVMName'))]",
+    "resourceName": "[concat(parameters('existingLabName'), '/', parameters('newVMName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-04-26-preview",
+      "type": "Microsoft.DevTestLab/labs/virtualmachines",
+      "name": "[variables('resourceName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
+        "galleryImageReference": {
+          "Sku": "[parameters('sku')]",
+          "OsType": "[parameters('osType')]",
+          "Publisher": "[parameters('publisher')]",
+          "Offer": "[parameters('offer')]",
+          "Version": "[parameters('version')]"
+        },
+        "size": "[parameters('newVMSize')]",
+        "userName": "[parameters('userName')]",
+        "sshKey": "[parameters('sshKey')]",
+        "isAuthenticationWithSshKey": true,
+        "labSubnetName": "[variables('labSubnetName')]",
+        "expirationDate": "[parameters('expirationDate')]"
+      }
+    }
+  ],
+  "outputs": {
+    "labVMId": {
+      "type": "string",
+      "value": "[variables('vmId')]"
+    }
+  }
+}

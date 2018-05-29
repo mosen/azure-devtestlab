@@ -1,0 +1,30 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newVMName": {
+      "value": "JamfProVM1"
+    },
+    "existingLabName": {
+      "value": "jsslab"
+    },
+    "newVMSize": {
+      "value": "Standard_B1ms"
+    },
+    "offer": {
+      "value": "CentOS"
+    },
+    "publisher": {
+      "value": "OpenLogic"
+    },
+    "sku": {
+      "value": "7.4"
+    },
+    "osType": {
+      "value": "Linux"
+    },
+    "version": {
+      "value": "latest"
+    }
+  }
+}

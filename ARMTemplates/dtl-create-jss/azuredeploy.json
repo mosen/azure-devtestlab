@@ -65,9 +65,15 @@
     },
     "expirationDate": {
       "type": "string",
-      "defaultValue": "2018-05-29T14:00:00.000Z",
+      "defaultValue": "2018-06-05T14:00:00.000Z",
       "metadata": {
         "description": "The date and time on which the VM will expire"
+      }
+    },
+    "githubPersonalToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The GitHub personal token to access this repository"
       }
     }
   },
@@ -76,15 +82,36 @@
     "labVirtualNetworkId": "[resourceId('Microsoft.DevTestLab/labs/virtualnetworks', parameters('existingLabName'), variables('labVirtualNetworkName'))]",
     "labVirtualNetworkName": "[concat('Dtl', parameters('existingLabName'))]",
     "vmId": "[resourceId ('Microsoft.DevTestLab/labs/virtualmachines', parameters('existingLabName'), parameters('newVMName'))]",
-    "resourceName": "[concat(parameters('existingLabName'), '/', parameters('newVMName'))]"
+    "resourceName": "[concat(parameters('existingLabName'), '/', parameters('newVMName'))]",
+    "artifactSourceName": "[concat(parameters('existingLabName'), '/', 'mosen')]"
   },
   "resources": [
+    {
+      "apiVersion": "2016-05-15",
+      "type": "Microsoft.DevTestLab/labs/artifactsources",
+      "name": "[variables('artifactSourceName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "displayName": "mosen",
+        "uri": "https://github.com/mosen/azure-devtestlab.git",
+        "sourceType": "GitHub",
+        "folderPath": "/Artifacts",
+        "armTemplateFolderPath": "/ARMTemplates",
+        "branchRef": "master",
+        "securityToken": "[parameters('githubPersonalToken')]"
+      }
+    },
     {
       "apiVersion": "2017-04-26-preview",
       "type": "Microsoft.DevTestLab/labs/virtualmachines",
       "name": "[variables('resourceName')]",
       "location": "[resourceGroup().location]",
       "properties": {
+        "artifacts": [
+          {
+            "artifactId": "[resourceId('Microsoft.DevTestLab/labs/artifactSources/artifacts', parameters('existingLabName'), 'mosen', 'JDK')]"
+          }
+        ],
         "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
         "galleryImageReference": {
           "Sku": "[parameters('sku')]",
@@ -98,7 +125,9 @@
         "sshKey": "[parameters('sshKey')]",
         "isAuthenticationWithSshKey": true,
         "labSubnetName": "[variables('labSubnetName')]",
-        "expirationDate": "[parameters('expirationDate')]"
+        "expirationDate": "[parameters('expirationDate')]",
+        "disallowPublicIpAddress": false,
+        "allowClaim": true
       }
     }
   ],
